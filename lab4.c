@@ -34,7 +34,7 @@ void task34(){
         /* code */
         printf("enter Natural n\n");
         scanf("%ld", &n);
-    } while (n < 0);
+    } while (n <= 0);
     printf("Enter x\n");
     scanf("%lf", &x);
     for (int i = 1; i <= n; i++)
@@ -216,6 +216,7 @@ int main(){
                 if(all == 0) break;
             case 11:
                 task186();
+                break;
             case 0:
                 printf("exiting");
                 break;
