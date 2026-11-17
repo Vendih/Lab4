@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#define EPS 1e-9
 
 long double factorial(int n){
     long double result = 1;
@@ -18,11 +19,22 @@ void swap(double *x, double *y){
 }
 void task27(){
     double x = 0;
+    
+    int z = 0;
 
     printf("task 27| Enter number\n");
     scanf("%lf", &x);
-    x= x - pow(x, 3)/factorial(3) + pow(x, 5)/factorial(5) - pow(x, 7)/factorial(7) + pow(x, 9)/factorial(9) - pow(x, 11)/factorial(11) + pow(x, 13)/factorial(13);
-    printf("result: %.3lf\n", x);
+    double result = x;
+    for(int i = 3; i < 14; i+= 2){
+        if (z==0){
+            result -= pow(x, i) / factorial(i);
+            z = 1;
+        } else {
+            result += pow(x, i) / factorial(i);
+            z = 0;
+        }
+    }
+    printf("result: %.3lf\n", result);
 }
 void task34(){
     double x = 0;
@@ -45,26 +57,26 @@ void task34(){
 
 };
 void task53(){
-    double s = 0;
-    s = pow(2, 11) - 1 - pow(2, 0) - pow(2, 1);
-    printf("task 53| s = 2^2+...+2^10 result: %.1lf\n", s);
+    int s = 0;
+    int t = 4;
+    for(int i = 2; i < 11; i++){
+        s += t;
+        t *= 2; 
+    }
+    printf("task 53| s = 2^2+...+2^10 result: %d\n", s);
 };
 void task90(){
     const int size = 10;
-    double a[size], result = 0;
+    double num = 0, result = 0;
     printf("Task90| Enter %d numbers\n", size);
     for (int i = 0; i < size; i++)
     {
-        int d= i+1;
-        printf("enter a%d\n",d);
-        scanf("%lf", &a[i]);
-    }
-    for (int i = 0; i < size; i++)
-    {
-        result += a[i];
+        printf("enter a%d\n", i + 1);
+        scanf("%lf", &num);
+        result += num;
     }
     result /= size;
-    printf("result: %.2lf\n", result);    
+    printf("result: %.2lf\n", result);
 };
 void task151(){
     int a, b;
@@ -74,19 +86,19 @@ void task151(){
         /* code */
         printf(" Enter a and b > 0\n");
         scanf("%d %d", &a, &b);
-    } while (a < 0 & b < 0);
-    
-    while (a > b)
+    } while (a <= b || b < 0);
+    int s = a;
+    while (s >= b)
     {
         /* code */
-        printf("sqrt a = %.3lf\n", sqrt(a));
-        a -= 1;
+        printf("sqrt a = %.3lf\n", sqrt(s));
+        s -= 1;
     }
     do
     {
         printf("sqrt a = %.3lf\n", sqrt(a));
         a -= 1;
-    }while(a > b);
+    }while(a >= b);
     
 };
 void task242(){
@@ -98,7 +110,7 @@ void task242(){
     if  (a>b){
         swap(&a, &b);
     }
-    for (double x = a; x <= b ; x += h){
+    for (double x = a; x <= (b + EPS) ; x += h){
         double y = pow(x, 2) * pow(sin(x), 2) + 1;
         printf("%.3lf\t%.3lf\n", x, y);
     }
@@ -108,7 +120,8 @@ void task89(){
     int n = 0;
     double a, sum = 0;
     printf("task 89| enter n\n");
-    scanf("%d", &n);
+    do {scanf("%d", &n);
+    } while (n <= 0);
     for(int i = 0; i < n; i++){
         printf("enter a%d\n", i+1);
         scanf("%lf", &a);
@@ -125,16 +138,29 @@ double fx(int x){
     if(part_two < 0 ){
         return NAN;
     }
-    double part_three = (5 * a * part_two) / (4 * a * x - b);
+    if( fabs(4 * a * x - b)< EPS ){
+        return NAN;
+    }
+    double part_three = (5 * a * sqrt(part_two)) / (4 * a * x - b);
     double y = part_one - part_three;
     return y;
 }
 void task258(){
     printf("task 258| result:\n");
-    int x[8] = {-5, -4, -3, -2, 0, 4, 7, 10};
-    for(int i = 0; i<8; i++){
-        printf("%.3d\t%.3lf\n", x[i] , fx(x[i]));
+    for (int i = 0; i < 8; i++) {
+        int x;
+        switch (i) {
+            case 0: x = -5; break;
+            case 1: x = -4; break;
+            case 2: x = -3; break;
+            case 3: x = -2; break;
+            case 4: x = 0;  break;
+            case 5: x = 4;  break;
+            case 6: x = 7;  break;
+            case 7: x = 10; break;
     }
+    printf("%3d\t%.3lf\n", x, fx(x));
+}
 };
 void task195(){
     printf("task 195| enter C\n");
@@ -142,9 +168,12 @@ void task195(){
     scanf("%lf", &c);
     printf("enter P\n");
     scanf("%lf", &p);
-    int mounth = 0;
-    while ( p < c){
+
+    double sum = p;
+    int mounth = 1;
+    while ( sum < c){
         p *= 1.05;
+        sum += p;
         mounth ++;
     }
     printf("mounth = %d\n", mounth);
